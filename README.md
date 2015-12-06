@@ -1,2 +1,3 @@
 # Libft
-Personal library 
+
+Personal library functions
