@@ -6,11 +6,15 @@
 #    By: eplumeco <eplumeco@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/02 16:44:53 by eplumeco          #+#    #+#              #
-#    Updated: 2015/12/04 18:45:04 by eplumeco         ###   ########.fr        #
+#    Updated: 2016/02/09 14:14:45 by eplumeco         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = ft_atoi.c ft_bzero.c ft_isalnum.c ft_isalpha.c ft_isascii.c \
+NAME = libft.a
+LIB_NAME = $(NAME)
+
+SRC_PATH = src
+SRC_NAME = ft_atoi.c ft_bzero.c ft_isalnum.c ft_isalpha.c ft_isascii.c \
 			ft_isdigit.c ft_islower.c ft_isprint.c ft_isupper.c ft_itoa.c \
 			ft_memalloc.c ft_memccpy.c ft_memchr.c ft_memcmp.c ft_memcpy.c \
 			ft_memdel.c ft_memmove.c ft_memset.c ft_putchar.c ft_putchar_fd.c \
@@ -22,35 +26,42 @@ SRCS = ft_atoi.c ft_bzero.c ft_isalnum.c ft_isalpha.c ft_isascii.c \
 			ft_strnequ.c ft_strnew.c ft_strnstr.c ft_strrchr.c ft_strsplit.c \
 			ft_strnstr.c ft_strsub.c ft_strtrim.c ft_tolower.c ft_toupper.c \
 			ft_strstr.c ft_swap.c ft_lstnew.c ft_lstdelone.c ft_lstdel.c \
-			ft_lstiter.c ft_lstadd.c ft_lstmap.c 
+			ft_lstiter.c ft_lstadd.c ft_lstmap.c ft_itoa_base.c ft_absolut.c 
 
 
-OBJ = $(SRCS:.c=.o)
+OBJ_PATH = obj
+OBJ_NAME = $(SRC_NAME:.c=.o)
+
+INC_PATH = includes
 
 CC = gcc
-
 CFLAGS = -Wall -Wextra -Werror
 
-LIB = libft.a
+SRC = $(addprefix $(SRC_PATH)/, $(SRC_NAME))
+OBJ = $(addprefix $(OBJ_PATH)/, $(OBJ_NAME))
+INC = $(addprefix -I, $(INC_PATH)/)
 
-NAME = libft.a
+all: $(NAME)
 
-all : $(NAME)
+$(NAME): $(OBJ)
+	ar rc $(LIB_NAME) $(OBJ)
+	ranlib $(LIB_NAME)
 
-$(NAME) : $(OBJ)
-	$(CC) $(CFLAGS) -c $(SRCS)
-	ar rc $(LIB) $(OBJ)
-	ranlib $(LIB)
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
+	@mkdir $(OBJ_PATH) 2> /dev/null || true
+	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 
-clean : 
-	rm -fv $(OBJ)
+clean: 
+	rm -f $(OBJ)
+	@rmdir $(OBJ_PATH) 2> /dev/null || true
 
-fclean : clean
-	rm -fv $(NAME)
+fclean: clean
+	rm -f $(NAME)
 
-re : fclean all
+re: fclean all
 
-norme :
-	norminette $(SRCS)
+norme:
+	norminette $(SRC)
+	norminette $(INC)libft.h
 
 .PHONY : all clean fclean re norme
